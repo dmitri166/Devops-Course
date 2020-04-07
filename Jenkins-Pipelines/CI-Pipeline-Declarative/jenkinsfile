@@ -12,7 +12,7 @@ pipeline {
         // This can be http or https
         NEXUS_PROTOCOL = "http"
         // Where your Nexus is running
-        NEXUS_URL = "192.168.0.129:8081"
+        NEXUS_URL = "192.168.1.149:8081"
         // Repository where we will upload the artifact
         NEXUS_REPOSITORY = "maven-hosted"
         // Jenkins credential id to authenticate to Nexus OSS
@@ -23,7 +23,7 @@ pipeline {
             steps {
                 script {
                     // Let's clone the source
-                    git 'https://github.com/SaraBenShabbat/hello-world-war.git'
+                    git 'https://github.com/dmitri166/hello-world-war.git'
                  // ([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Git-Creds', url: 'https://github.com/SaraBenShabbat/hello-world-war.git']]])                }
                 }
             }
