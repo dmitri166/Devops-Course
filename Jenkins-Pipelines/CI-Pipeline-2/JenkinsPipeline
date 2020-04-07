@@ -22,8 +22,8 @@ def notifySlack(String buildStatus = 'STARTED') {
 node('centos-jenkins'){
 
     stage('Checking Out Code'){
-        checkout([$class: 'GitSCM', branches: [[name: '${branch}']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Git-Creds', url: 'https://github.com/SaraBenShabbat/jenkins-repo.git']]])
-        /*  checkout([$class: 'GitSCM', branches: [[name: 'master' ]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Git-Creds', url: 'https://github.com/SaraBenShabbat/jenkins-repo.git']]]) */
+        checkout([$class: 'GitSCM', branches: [[name: '${branch}']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Git-Creds', url: 'https://github.com/dmitri166/jenkins-repo.git']]])
+        /*  checkout([$class: 'GitSCM', branches: [[name: 'master' ]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Git-Creds', url: 'https://github.com/dmitri166/jenkins-repo.git']]]) */
     }
 
     stage('Building'){
@@ -36,7 +36,7 @@ node('centos-jenkins'){
 
     stage('Publishing'){
         withDockerRegistry(credentialsId: 'DockerHub-Creds') {
-            sh label: '', script: "docker tag python-img-jenkins:${env.BUILD_ID} sarabenshabbat/python-img-jenkins:${env.BUILD_ID} && docker push sarabenshabbat/python-img-jenkins:${env.BUILD_ID}"
+            sh label: '', script: "docker tag python-img-jenkins:${env.BUILD_ID} dmitri166/python-img-jenkins:${env.BUILD_ID} && docker push dmitri166/python-img-jenkins:${env.BUILD_ID}"
         }
     }
 
