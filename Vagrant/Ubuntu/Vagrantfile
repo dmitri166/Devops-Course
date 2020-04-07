@@ -1,0 +1,9 @@
+Vagrant.configure("2") do |config|
+
+# Specifing the box.
+  config.vm.box = "bento/ubuntu-18.04"
+
+# Provisioning via a shell script. (- For Docker.)
+  config.vm.provision "shell", path: "docker_for_ubuntu.sh"
+
+end

@@ -1,0 +1,5 @@
+---The string with no duplicates:
+ cfghilmnoprstuy
+---The string in reversed order:
+['circus', 'flying', 'pythons', 'monty']
+['mont', 'y py', 'thon', 's fl', 'ying', ' cir', 'cus']

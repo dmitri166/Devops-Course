@@ -1,0 +1,55 @@
+def notifySlack(String buildStatus = 'STARTED') {
+    // Build status of null means success.
+    buildStatus = buildStatus ?: 'SUCCESS'
+
+    def color
+
+    if (buildStatus == 'STARTED') {
+        color = '#D4DADF'
+    } else if (buildStatus == 'SUCCESS') {
+        color = '#BDFFC3'
+    } else if (buildStatus == 'UNSTABLE') {
+        color = '#FFFE89'
+    } else {
+        color = '#FF9FA1'
+    }
+
+    def msg = "${buildStatus}: `${env.JOB_NAME}` #${env.BUILD_NUMBER}:\n${env.BUILD_URL}"
+
+    slackSend(color: color, message: msg)
+}
+
+node('centos-jenkins'){
+
+    stage('Checking Out Code'){
+        checkout([$class: 'GitSCM', branches: [[name: '${branch}']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Git-Creds', url: 'https://github.com/SaraBenShabbat/jenkins-repo.git']]])
+        /*  checkout([$class: 'GitSCM', branches: [[name: 'master' ]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Git-Creds', url: 'https://github.com/SaraBenShabbat/jenkins-repo.git']]]) */
+    }
+
+    stage('Building'){
+        sh label: '', script: "docker build -t python-img-jenkins:${env.BUILD_ID} ."
+    }
+
+    stage('Testing'){
+
+    }
+
+    stage('Publishing'){
+        withDockerRegistry(credentialsId: 'DockerHub-Creds') {
+            sh label: '', script: "docker tag python-img-jenkins:${env.BUILD_ID} sarabenshabbat/python-img-jenkins:${env.BUILD_ID} && docker push sarabenshabbat/python-img-jenkins:${env.BUILD_ID}"
+        }
+    }
+
+   stage('Notifying Slack'){
+       try {
+           notifySlack()
+       }   catch (e) {
+               currentBuild.result = 'FAILURE'
+               throw e
+       }   finally {
+               notifySlack(currentBuild.result)
+       }
+   }
+
+}
+

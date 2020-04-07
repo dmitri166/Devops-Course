@@ -1,0 +1,33 @@
+node('master'){
+
+    stage('Checking Out Code'){
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Git-Creds', url: 'https://github.com/SaraBenShabbat/hello-world-war.git']]])
+    }
+
+    stage('Analyzing'){
+        // sh label: '', script: "mvn verify sonar:sonar"
+    }
+
+    stage('Building'){
+        sh label: '', script: "mvn clean package"
+    }
+
+    stage('Uploading Artifact to Nexus'){
+        nexusArtifactUploader artifacts: [[artifactId: 'hello-world-war', classifier: '', file: '/opt/tomcat/.jenkins/workspace/CI-CD-Nexus=DSLpipeline/target/hello-world-war-1.0.${BUILD_ID}.war', type: 'war']], credentialsId: 'Nexus-Creds', groupId: 'com.efsavage', nexusUrl: '192.168.0.129:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-hosted-DSL', version: '1.0.${BUILD_ID}'
+    }
+
+    stage('Deploying - for the previous artifact'){
+        // As, the nexus repository hasn't yet been refreshed.
+        sh label: '', script: '''rm -rf /opt/tomcat/apache-tomcat-9.0.30/webapps/hello-world-*'''
+
+        def prevArtifact = env.BUILD_ID.toInteger();
+        def temp = 1;
+        prevArtifact = prevArtifact - temp;
+        // The next line has to be run instead of the next one; In this way, Every time the pipeline deploys the previous srtifact. I really don't know why it doesn't recognize ${prevArtifact}. (- It contains the correct value.)
+        //sh label: '', script: '''curl -u admin:84920000Sbs_ -sSL -X GET -G  "http://192.168.0.129:8081/service/rest/v1/search/assets" -d repository=maven-hosted-DSL -d maven.groupId=com.efsavage -d maven.artifactId=hello-world-war  -d maven.baseVersion=1.0.${prevArtifact} -d maven.extension=war  | grep -Po \'"downloadUrl" : "\\K.+(?=",)\' | xargs curl -fsSL -o /opt/tomcat/apache-tomcat-9.0.30/webapps/hello-world-war-1.0.${prevArtifact}.war'''
+
+        sh label: '', script: '''curl -u admin:84920000Sbs_ -sSL -X GET -G  "http://192.168.0.129:8081/service/rest/v1/search/assets" -d repository=maven-hosted-DSL -d maven.groupId=com.efsavage -d maven.artifactId=hello-world-war -d maven.baseVersion=1.0.82 -d maven.extension=war  | grep -Po \'"downloadUrl" : "\\K.+(?=",)\' | xargs curl -fsSL -o /opt/tomcat/apache-tomcat-9.0.30/webapps/hello-world-war-1.0.${BUILD_ID}.war'''
+    }
+
+}
+

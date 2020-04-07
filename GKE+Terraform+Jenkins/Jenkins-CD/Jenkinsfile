@@ -1,0 +1,38 @@
+node('Google-Cloud'){
+    
+    stage('Checking out needed files'){
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Git-Creds', url: 'https://github.com/SaraBenShabbat/GKE.git']]])
+    }
+    
+    stage('Provisioning GKE'){
+        withEnv(['GCLOUD_PATH=/root/google-cloud-sdk/bin']) {
+            sh label: '', script: '''cd cluster
+                                     terraform init
+                                     terraform plan
+                                     terraform apply -auto-approve
+                                     $GCLOUD_PATH/gcloud container clusters get-credentials solid-justice-272605-cluster --zone us-central1-a --project solid-justice-272605
+                                     cd ..'''
+        }
+    }
+    
+    stage('Deploying Prometheus via Helm'){
+        withEnv(['KUBECTL_PATH=/root/google-cloud-sdk/bin']) {
+            sh label: '', script: '''cd helm-prometheus
+                                     bash helm-installation.sh
+                                     terraform init
+                                     terraform plan
+                                     terraform apply -auto-approve
+                                     $KUBECTL_PATH/kubectl patch svc/prometheus-grafana-0 -p '{"spec": {"type": "LoadBalancer"}}'
+                                     cd ..'''
+        }
+    }
+    
+    stage('Deploying my app'){
+        sh label: '', script: '''cd deploy
+                                 terraform init
+                                 terraform plan 
+                                 terraform apply -auto-approve
+                                 cd ..'''
+    }
+    
+}
