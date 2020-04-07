@@ -6,7 +6,7 @@ resource "helm_release" "mongo" {
 
   set {
     name  = "auth.adminUser"
-    value = "sara"
+    value = "dmitri"
   }
 
   set {
