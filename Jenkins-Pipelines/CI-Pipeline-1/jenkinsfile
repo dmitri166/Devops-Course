@@ -34,7 +34,7 @@ node('master'){
         }
     
         stage('4. Building Dockerfile'){
-            checkout([$class: 'GitSCM', branches: [[name: '*/sarabenshabbat_sol']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Git-Creds', url: 'https://github.com/SaraBenShabbat/No.6_module-FinalProject.git']]])
+            checkout([$class: 'GitSCM', branches: [[name: '*/dmitri166_sol']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'Git-Creds', url: 'https://github.com/SaraBenShabbat/No.6_module-FinalProject.git']]])
             sh label: '', script: '''cp ${WORKSPACE}/target/hello-world-war-1.0.0.war ${WORKSPACE}
                                      docker build .''' 
         }
