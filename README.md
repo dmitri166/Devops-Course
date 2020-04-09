@@ -1,4 +1,4 @@
 # DevOps Portfolio - Dmitri Kachka
 
-The repository contains my DevOps portfolio, organized by directories with informaive names.
+The repository contains my DevOps portfolio, organized by directories with informative names.
 
