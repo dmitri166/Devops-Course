@@ -3,7 +3,7 @@ module "kubernetes" {
   region = "us-central1"
 
   project_id_map = {
-    default = "solid-justice-272605"
+    default = "dev-lambda-273511"
   }
 }
 
