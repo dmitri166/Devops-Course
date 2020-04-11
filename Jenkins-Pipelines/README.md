@@ -9,7 +9,7 @@ The directory called 'CI-Pipeline-2' contains a DSL pipeline that performs:
 Checking out the app code and the appropriate Dockerfile, building the Dockerfile, publising the docker image into DockHub and notifting Slack.
 
 The directory called 'CI-Pipeline-Declarative' contains a declarative pipeline that perfoms:<br>
-Checking out the app code, anlayzing the code, building the code uisng maven and publising the artifact to Nexus maven hosted registry.
+Checking out the app code, analayzing the code, building the code using maven and publishing the artifact to Nexus maven hosted registry.
 
 The directory called 'CI-CD-pipeline' contains a DSL pipeline that performs:<br>
 Checking out the app code, analyzing the code using sonarcloud, building the app, uploading the artifact to to Nexus maven hosted registry and deploying the artifact.
