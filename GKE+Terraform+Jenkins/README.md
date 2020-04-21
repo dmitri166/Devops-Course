@@ -12,7 +12,7 @@ The directory called 'GKE' contains HCL files for Provisioning GKE cluster.
 
 The directory called 'Deploying-Prometheus' contains a script for installing helm and HCL files for deploying Helm Prometheus-Operator chart.
 
-The directory called 'MongDB' contains HCL files for deploying Helm MongDB statefull chart. (- Require helm v3.1.2)
+The directory called 'MongoDB' contains HCL files for deploying Helm MongDB statefull chart. (- Require helm v3.1.2)
 
 The directory called 'Nginx' contains HCL files for deploying Nginx docker image with Load Balnacer.
 
